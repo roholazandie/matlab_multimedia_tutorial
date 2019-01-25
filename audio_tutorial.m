@@ -1,33 +1,43 @@
 clc;
-clear all;
+clear;
+%WARNING: running the whole file at once may not sound a good idea, try to
+%run section by section
 
-[y, Fs] = audioread('trains.mp3');
+%% read and plot
+[y, Fs] = audioread('data/trains.mp3');
 
-%sound(y, Fs)
-plot(y)
+y_length = length(y);
+t = (0:y_length-1)/Fs;% Time vector
+figure;
+plot(t, y)
+xlabel('time(seconds)')
+ylabel('y')
 
-audio_length_in_sec = length(y)/Fs;
 
+%% trimming the audio and playing it
 start_time = 5*Fs;
 end_time = 10*Fs;
 y_short = y(start_time:end_time, :);
 
-% sound(y_short, Fs);
-% 
-% %audiowrite('train_short.wav', y_short, Fs);
-% 
-% y_short(:, 1)=0;
-% sound(y_short, Fs)
-% 
-% y_short_reversed = y_short(end:-1:1, end:-1:1);
-% sound(y_short_reversed, Fs)
-% 
-% white_noise = rand(length(y_short), 2)*0.1;
-% y_noised = y_short + white_noise;
-% sound(y_noised, Fs)
-% 
-% 
-%sound(y_short, Fs/2) %low frequency
-%sound(y_short, Fs*2) %high frequency
-% 
-% 
+sound(y_short, Fs);
+
+%% writing audio file
+audiowrite('data/train_short.wav', y_short, Fs);
+
+%% create mono audio file from stereo
+y_short(:, 1)=0;
+sound(y_short, Fs)
+
+%% reverse the audion file
+y_short_reversed = y_short(end:-1:1, end:-1:1);
+sound(y_short_reversed, Fs)
+
+%% adding random noise to the audio file
+white_noise = rand(length(y_short), 2)*0.1;
+y_noised = y_short + white_noise;
+sound(y_noised, Fs)
+
+%% changing the frequency of audio file
+sound(y_short, Fs/2) %low frequency
+sound(y_short, Fs*2) %high frequency
+
